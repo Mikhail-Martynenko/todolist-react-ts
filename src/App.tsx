@@ -45,7 +45,7 @@ class App extends React.Component<{}, AppState> {
             title,
             isComplete: false
         };
-        this.setState({tasks: [...tasks, newTask]});
+        this.setState((prevState) => ({tasks: [...prevState.tasks, newTask]}));
 
         try {
             const response = await fetch(URL_PATH, {
@@ -76,7 +76,7 @@ class App extends React.Component<{}, AppState> {
         }
 
         this.setState(prevState => ({
-            tasks: prevState.tasks.filter(task => task.id !== id)
+            tasks: prevState.tasks.filter(task => task.id !== id).map((task, index) => ({...task, id: index + 1}))
         }));
     };
 
@@ -133,7 +133,12 @@ class App extends React.Component<{}, AppState> {
     };
 
     handleDeleteCompleted = () => {
-        this.setState((prevState) => ({tasks: prevState.tasks.filter(task => !task.isComplete)}));
+        this.setState(prevState => {
+            const remainingTasks = prevState.tasks.filter(task => !task.isComplete);
+            return {
+                tasks: remainingTasks.map((task, index) => ({ ...task, id: index + 1 })),
+            };
+        });
     };
 
     addTaskEnter: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
