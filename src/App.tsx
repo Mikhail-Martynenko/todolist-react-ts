@@ -136,7 +136,7 @@ class App extends React.Component<{}, AppState> {
         this.setState(prevState => {
             const remainingTasks = prevState.tasks.filter(task => !task.isComplete);
             return {
-                tasks: remainingTasks.map((task, index) => ({ ...task, id: index + 1 })),
+                tasks: remainingTasks.map((task, index) => ({...task, id: index + 1})),
             };
         });
     };
