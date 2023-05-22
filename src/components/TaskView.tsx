@@ -1,17 +1,14 @@
 import React from 'react';
+import {Task} from "../domain/Task";
 
 interface TaskProps {
-    task: {
-        id: number;
-        title: string;
-        isComplete: boolean;
-    };
+    task: Task;
     onDelete: (id: number) => void;
     onToggle: (id: number) => void;
     onEdit: (id: number) => void;
 }
 
-class Task extends React.Component<TaskProps> {
+class TaskView extends React.Component<TaskProps> {
     constructor(props: TaskProps) {
         super(props);
     }
@@ -43,4 +40,4 @@ class Task extends React.Component<TaskProps> {
     }
 }
 
-export default Task;
+export default TaskView;

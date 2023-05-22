@@ -2,15 +2,12 @@ import React from 'react';
 import TaskList from './components/TaskList';
 import './App.css'
 import FieldEdit from "./components/FieldEdit";
+import {Tasks} from "./domain/Task";
 
 const URL_PATH: string = `https://jsonplaceholder.typicode.com/posts/`
 
 interface AppState {
-    tasks: {
-        id: number;
-        title: string;
-        isComplete: boolean;
-    }[];
+    tasks: Tasks;
     editingTaskId: number | null;
 }
 
@@ -26,13 +23,12 @@ class App extends React.Component<{}, AppState> {
     async componentDidMount() {
         try {
             const response = await fetch(URL_PATH);
-            if (response.ok) {
-                const tasks = await response.json();
-                console.log('Запрос прошёл успешно!')
-                // this.setState(() => ({
-                //     tasks: [...tasks.slice(0, 5)]
-                // }));
-            }
+            if (!response.ok) return;
+            const tasks = await response.json();
+            console.log('Запрос прошёл успешно!')
+            // this.setState(() => ({
+            //     tasks: [...tasks.slice(0, 5)]
+            // }));
         } catch (error) {
             console.log(error)
         }
@@ -144,10 +140,12 @@ class App extends React.Component<{}, AppState> {
     addTaskEnter: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
         const {value} = e.currentTarget;
 
-        if (e.key === 'Enter' && value.trim() !== '') {
-            this.handleAddTask(value.trim());
-            e.currentTarget.value = '';
+        if (e.key !== 'Enter' || value.trim() === '') {
+            return;
         }
+
+        this.handleAddTask(value.trim());
+        e.currentTarget.value = '';
     };
 
     handleCancelEdit = () => {
@@ -162,14 +160,12 @@ class App extends React.Component<{}, AppState> {
     handleSave = (id: number | null, updatedTask: { title: string; isComplete?: boolean }) => {
         const {tasks} = this.state;
         const updatedTasks = tasks.map(task => {
-            if (task.id === id) {
-                return {
-                    ...task,
-                    title: updatedTask.title,
-                    isComplete: updatedTask.isComplete !== undefined ? updatedTask.isComplete : task.isComplete,
-                };
-            }
-            return task;
+            if (task.id !== id) return task;
+            return {
+                ...task,
+                title: updatedTask.title,
+                isComplete: updatedTask.isComplete !== undefined ? updatedTask.isComplete : task.isComplete,
+            };
         });
 
         this.setState({tasks: updatedTasks});
@@ -187,7 +183,7 @@ class App extends React.Component<{}, AppState> {
                     tasks={tasks} onDelete={this.handleDeleteTask} onToggle={this.handleToggleTask}
                     onEdit={this.handleEditClick}
                 />
-                {editingTaskId !== null && (
+                {typeof editingTaskId === 'number' && (
                     <FieldEdit
                         tasks={tasks}
                         editingTaskId={editingTaskId}

@@ -1,11 +1,8 @@
 import React from "react";
+import {Tasks} from "../domain/Task";
 
 interface FieldEditProps {
-    tasks: {
-        id: number;
-        title: string;
-        isComplete: boolean;
-    }[];
+    tasks: Tasks;
     editingTaskId: number | null;
     handleCancelEdit: () => void;
     handleSave: (id: number | null, updatedTask: { title: string; isComplete?: boolean }) => void;
