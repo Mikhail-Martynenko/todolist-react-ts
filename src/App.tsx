@@ -2,8 +2,7 @@ import React from 'react';
 import TaskList from './components/TaskList';
 import './App.css'
 import FieldEdit from "./components/FieldEdit";
-
-const URL_PATH: string = `https://jsonplaceholder.typicode.com/posts/`
+import {URL_PATH} from "./shared/consts";
 
 interface AppState {
     tasks: {
